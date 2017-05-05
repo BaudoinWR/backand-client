@@ -22,10 +22,37 @@ public interface BackandClient {
    */
   boolean establishConnection(String username, String password, String appName) throws BackandException;
 
+  /**
+   * Use the backand.com /object/table/id endpoint to retrieve a specific object in the specified table
+   * @param table backand table to lookup
+   * @param id id of the object
+   * @param classOfT class of the expected item
+   * @param <T>
+   * @return an Object of class T
+   * @throws BackandException
+   */
   <T> T retrieveObjectById(String table, int id, Class<T> classOfT) throws BackandException;
 
+  /**
+   * Use the backand.com /object/table endpoint to retrieve all objects in a table.
+   * @param table the table to lookup
+   * @param classOfT the class of the expected items
+   * @param <T>
+   * @return an array of objects of class T
+   * @throws BackandClientException
+   */
   <T> T[] retrieveObjects(String table, Class<T> classOfT) throws BackandClientException;
 
+  /**
+   * Use the backand.com /object/table/id/param to retrieve objects through many to one or many to many relationships
+   * @param table the table of the base object
+   * @param id the id of the base object
+   * @param param the name of the relationship in the base table
+   * @param classOfT the class of the expected objects in the relationship
+   * @param <T>
+   * @return an array of objects of class T
+   * @throws BackandClientException
+   */
   <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT) throws BackandClientException;
 
 }

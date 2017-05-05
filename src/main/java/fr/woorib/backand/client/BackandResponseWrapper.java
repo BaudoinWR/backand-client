@@ -17,6 +17,11 @@ class BackandResponseWrapper<T> {
     return data;
   }
 
+  /**
+   * Transforms data from an array of LinkedTreeMap into an array of proxies of class T
+   * @param classOfT the class of the objects wanted.
+   * @param backandTableName the name of the backand.com table where the data was retrieved.
+   */
   void wrapData(Class<T> classOfT, String backandTableName) {
     List<T> list = new ArrayList<>();
     for (int i=0; i<data.length;i++) {
@@ -30,6 +35,14 @@ class BackandResponseWrapper<T> {
     data = (T[]) list.toArray();
   }
 
+  /**
+   * Provides a way to build a proxy object of class T using GLib Enhancer and fill it with the LinkedTreeMap retrieved from backand.com
+   * @param classOfT class of the object expected
+   * @param backandMap data retrieved from backand.com
+   * @param backandTableName the table name on backand.com. Used to later retrieve relationship objects through backand.
+   * @param <T>
+   * @return an object of class T
+   */
   static <T> T generateWrappedObject(Class<T> classOfT, LinkedTreeMap backandMap, String backandTableName) {
     T o = null;
     try {
