@@ -26,7 +26,7 @@ public interface BackandClient {
 
   <T> T[] retrieveObjects(String table, Class<T> classOfT) throws BackandClientException;
 
-  <T> T[] retrieveObjectDependence(String table, Object id, String param, Class<T> classOfT) throws BackandClientException;
+  <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT) throws BackandClientException;
 
 }
  

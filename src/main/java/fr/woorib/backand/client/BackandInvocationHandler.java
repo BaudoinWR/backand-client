@@ -58,13 +58,13 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
       System.err.println("Filed "+ e.getMessage() + " sent by backand not present in class " + real.getClass() );
     }
     catch (InvocationTargetException e) {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      e.printStackTrace();
     }
     catch (NoSuchMethodException e) {
       System.err.println("Filed "+ e.getMessage() + " not present in class " + real.getClass() );
     }
     catch (IllegalAccessException e) {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+      e.printStackTrace();
     }
   }
 
@@ -108,7 +108,6 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
         e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
         throw new InvocationTargetException(e, "Backand Access failed for " + param);
       }
-      //invoke = Collections.singletonList(backandMap.get(param));
     } else {
       invoke = method.invoke(real, args);
     }

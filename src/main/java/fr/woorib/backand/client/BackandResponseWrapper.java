@@ -13,20 +13,8 @@ class BackandResponseWrapper<T> {
   private int totalRows;
   private T[] data;
 
-  public int getTotalRows() {
-    return totalRows;
-  }
-
-  public void setTotalRows(int totalRows) {
-    this.totalRows = totalRows;
-  }
-
-  public T[] getData() {
+  T[] getData() {
     return data;
-  }
-
-  public void setData(T[] data) {
-    this.data = data;
   }
 
   void wrapData(Class<T> classOfT, String backandTableName) {
@@ -42,7 +30,7 @@ class BackandResponseWrapper<T> {
     data = (T[]) list.toArray();
   }
 
-  public static <T> T generateWrappedObject(Class<T> classOfT, LinkedTreeMap backandMap, String backandTableName) {
+  static <T> T generateWrappedObject(Class<T> classOfT, LinkedTreeMap backandMap, String backandTableName) {
     T o = null;
     try {
       o = (T) Enhancer.create(classOfT, new BackandInvocationHandler<>(backandMap, classOfT.newInstance(), backandTableName));
@@ -54,35 +42,6 @@ class BackandResponseWrapper<T> {
       e.printStackTrace();
     }
     return o;
-  }
-
-  public class BackandData {
-    private Object __metadata;
-    private T data;
-
-    public void put(String key, Object value) {
-      System.out.println("trying put "+key);
-    }
-
-    public void set__metadata(Object __metadata) {
-      // not supported
-    }
-
-    public T getData() {
-      return data;
-    }
-
-    public void setData(T data) {
-      this.data = data;
-    }
-
-    @Override
-    public String toString() {
-      return "BackandData{" +
-        "__metadata=" + __metadata +
-        ", data=" + data +
-        '}';
-    }
   }
 
   @Override

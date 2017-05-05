@@ -3,7 +3,7 @@ package fr.woorib.backand.client;
 /**
  * AccessToken holder for oAuth token returned by backand.com
  */
-class AccessToken {
+public class AccessToken {
   private String access_token;
   private String token_type;
   private int expires_in;
