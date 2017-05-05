@@ -1,6 +1,3 @@
-/**
- * Paquet de définition
- **/
 package fr.woorib.backand.client.exception;
 
 /**
