@@ -6,16 +6,11 @@ import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.Proxy;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Scanner;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import fr.woorib.backand.client.api.BackandClient;
-import fr.woorib.backand.client.beans.Beacon;
-import fr.woorib.backand.client.beans.User;
 import fr.woorib.backand.client.exception.BackandClientException;
 import fr.woorib.backand.client.exception.BackandException;
 import fr.woorib.backand.client.tools.HttpHelper;
@@ -37,6 +32,9 @@ public class BackandClientImpl implements BackandClient {
     proxy = new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort));
   }
 
+  /**
+   * @return the current instance if it exists, otherwise create an instance with no proxy.
+   */
   public static BackandClient get() {
     if (instance == null) {
       instance = new BackandClientImpl();
@@ -44,6 +42,11 @@ public class BackandClientImpl implements BackandClient {
     return instance;
   }
 
+  /**
+   * @param proxyHost
+   * @param proxyPort
+   * @return the current instance if it exists, otherwise create an instance with the specified proxy.
+   */
   public static BackandClient get(String proxyHost, Integer proxyPort) {
     if (instance == null) {
       instance = new BackandClientImpl(proxyHost, proxyPort);
@@ -123,66 +126,5 @@ public class BackandClientImpl implements BackandClient {
     return response;
   }
 
-  public static void main(String[] args) throws BackandException {
-    String username;
-    String password;
-    String appName;
-    MainArgs getMainArgs = new MainArgs(args).invoke();
-    username = getMainArgs.getUsername();
-    password = getMainArgs.getPassword();
-    appName = getMainArgs.getAppName();
-    BackandClient backandClient = BackandClientImpl.get("lyon.proxy.corp.sopra", 8080);
-    backandClient.establishConnection(username, password, appName);
-    User users = backandClient.retrieveObjectById("users", 1, User.class);
-    System.out.println(users);
-    Collection<Beacon> seen_beacons = users.getSeen_beacons();
-    System.out.println(seen_beacons);
-    Object[] all = backandClient.retrieveObjects("users", User.class);
-    Arrays.stream(all).forEach(System.out::println);
-    Collection<Beacon> beacons = ((User) all[0]).getBeacons();
-    beacons.forEach(System.out::println);
-  }
-
-
-  private static class MainArgs {
-    private String[] args;
-    private String username;
-    private String password;
-    private String appName;
-
-    public MainArgs(String... args) {
-      this.args = args;
-    }
-
-    public String getUsername() {
-      return username;
-    }
-
-    public String getPassword() {
-      return password;
-    }
-
-    public String getAppName() {
-      return appName;
-    }
-
-    public MainArgs invoke() {
-      if (args != null && args.length == 3) {
-        username = args[0];
-        password = args[1];
-        appName = args[2];
-      }
-      else {
-        Scanner in = new Scanner(System.in);
-        System.out.print("username: ");
-        username = in.nextLine();
-        System.out.print("password: ");
-        password = in.nextLine();
-        System.out.print("application name:");
-        appName = in.nextLine();
-      }
-      return this;
-    }
-  }
 }
  
