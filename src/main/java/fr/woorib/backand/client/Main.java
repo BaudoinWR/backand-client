@@ -12,7 +12,7 @@ import fr.woorib.backand.client.beans.User;
 import fr.woorib.backand.client.exception.BackandException;
 
 /**
- * Description: Merci de donner une description du service rendu par cette classe
+ * Main class used for testing of backand.com calls
  */
 public class Main {
 
@@ -30,7 +30,7 @@ public class Main {
     Object[] all = backandClient.retrieveObjects("users", User.class);
     Arrays.stream(all).forEach(System.out::println);
     Collection<Beacon> beacons = ((User) all[0]).getBeacons();
-    beacons.forEach(System.out::println);
+    beacons.forEach(b -> { System.out.println(b); System.out.println(b.getOwner());} );
   }
 
   private static class MainArgs {

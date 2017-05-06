@@ -3,14 +3,29 @@ package fr.woorib.backand.client.api;
 import fr.woorib.backand.client.exception.BackandClientException;
 import fr.woorib.backand.client.exception.BackandException;
 
+import java.util.Date;
+
 /**
  * Java api to connect to backand.com serverless provider
  */
 public interface BackandClient {
+
+  /** Classes returned by backand.com that should be directly inserted into beans. */
+  Class[] BACKAND_CLASSES = new Class[] {
+          Integer.class,
+          int.class,
+          Double.class,
+          double.class,
+          Float.class,
+          float.class,
+          Boolean.class,
+          boolean.class,
+          String.class,
+          Date.class};
   /** Backand's public API url. **/
-  static String BACKAND_API_URL = "https://api.backand.com";
+  String BACKAND_API_URL = "https://api.backand.com";
   /** Backand's oAuth endpoint to get user token **/
-  static String TOKEN_ENDPOINT = "/token";
+  String TOKEN_ENDPOINT = "/token";
 
   /** Establish a connection to the backand.com api in order to retrive an access_token.
    *

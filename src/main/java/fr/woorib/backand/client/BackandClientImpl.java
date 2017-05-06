@@ -11,6 +11,7 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import fr.woorib.backand.client.api.BackandClient;
+import fr.woorib.backand.client.api.BackandObject;
 import fr.woorib.backand.client.exception.BackandClientException;
 import fr.woorib.backand.client.exception.BackandException;
 import fr.woorib.backand.client.tools.HttpHelper;
@@ -105,7 +106,8 @@ public class BackandClientImpl implements BackandClient {
 
   private String callBackand(String endpoint, Map<String, String> parameters) throws BackandClientException {
     HttpURLConnection conn = null;
-    String response = "";
+    String response;
+    System.out.println(endpoint);
     try {
       conn = HttpHelper.getHttpURLConnection(proxy, token, BACKAND_API_URL + endpoint);
 

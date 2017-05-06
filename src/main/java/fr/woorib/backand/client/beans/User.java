@@ -1,11 +1,14 @@
 package fr.woorib.backand.client.beans;
 
+import fr.woorib.backand.client.api.BackandObject;
+
 import java.util.Collection;
 import java.util.Collections;
 
 /**
  * User bean used for personal testing with backand.com account
  */
+@BackandObject(table="users")
 public class User {
   private String email = "";
   private Collection<Beacon> beacons = Collections.emptyList();
@@ -51,7 +54,7 @@ public class User {
 
   @Override
   public String toString() {
-    return "UserImpl{" +
+    return "User{" +
       "email='" + email + '\'' +
       ", beacons=" + beacons +
       ", seen_beacons=" + seen_beacons +
