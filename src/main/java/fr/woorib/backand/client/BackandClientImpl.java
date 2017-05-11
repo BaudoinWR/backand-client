@@ -71,11 +71,21 @@ public class BackandClientImpl implements BackandClient {
   }
 
   @Override
-  public <T> T retrieveObjectById(String table, int id, Class<T> classOfT) throws BackandException {
+  public <T> T retrieveObjectById(String table, Integer id, Class<T> classOfT) throws BackandException {
     String callBackand = callBackand("/1/objects/" + table +"/"+id);
     LinkedTreeMap t = extractResponseObject(callBackand, LinkedTreeMap.class);
     T t1 = BackandResponseWrapper.generateWrappedObject(classOfT, t, table);
     return t1;
+  }
+
+  @Override
+  public <T> T retrieveBackandObjectFromId(Integer id, Class<T> type) throws BackandException {
+    BackandObject annotation = type.getAnnotation(BackandObject.class);
+    if (annotation == null) {
+      return null;
+    }
+    String table = annotation.table();
+    return BackandClientImpl.get().retrieveObjectById(table, id, type);
   }
 
   @Override

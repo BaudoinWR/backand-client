@@ -1,9 +1,8 @@
 package fr.woorib.backand.client.api;
 
+import java.util.Date;
 import fr.woorib.backand.client.exception.BackandClientException;
 import fr.woorib.backand.client.exception.BackandException;
-
-import java.util.Date;
 
 /**
  * Java api to connect to backand.com serverless provider
@@ -46,7 +45,16 @@ public interface BackandClient {
    * @return an Object of class T
    * @throws BackandException
    */
-  <T> T retrieveObjectById(String table, int id, Class<T> classOfT) throws BackandException;
+  <T> T retrieveObjectById(String table, Integer id, Class<T> classOfT) throws BackandException;
+
+  /**
+   * Retrieve an object on backand.com based on it's type and id
+   * @param id
+   * @param type must be anotated with {@link fr.woorib.backand.client.api.BackandObject}
+   * @return
+   * @throws BackandException
+   */
+  <T> T retrieveBackandObjectFromId(Integer id, Class<T> type) throws BackandException;
 
   /**
    * Use the backand.com /object/table endpoint to retrieve all objects in a table.
