@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 import com.google.gson.internal.LinkedTreeMap;
 import fr.woorib.backand.client.api.BackandClient;
+import fr.woorib.backand.client.api.BackandManyToMany;
 import fr.woorib.backand.client.api.BackandObject;
 import fr.woorib.backand.client.exception.BackandClientException;
 import fr.woorib.backand.client.exception.BackandException;
@@ -140,7 +141,14 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
     try {
       Integer id = ReflectionHelper.castValue(backandId, int.class);
       Class requiredClass = (Class) ((ParameterizedType) method.getGenericReturnType()).getActualTypeArguments()[0];
-      Object[] data = BackandClientImpl.get().retrieveObjectDependence(backandTableName, id, param, requiredClass);
+      BackandManyToMany annotation = method.getAnnotation(BackandManyToMany.class);
+      Object[] data;
+      if (annotation != null) {
+        String manyToManySide = annotation.parameter();
+        data = BackandClientImpl.get().retrieveObjectDependence(backandTableName, id, param, requiredClass, manyToManySide);
+      } else {
+        data = BackandClientImpl.get().retrieveObjectDependence(backandTableName, id, param, requiredClass);
+      }
       return Arrays.asList(data);
     }
     catch (BackandClientException e) {

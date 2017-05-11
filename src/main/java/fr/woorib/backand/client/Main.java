@@ -31,7 +31,6 @@ public class Main {
     Arrays.stream(all).forEach(System.out::println);
     Collection<Beacon> beacons = ((User) all[0]).getBeacons();
     beacons.forEach(b -> { System.out.println(b); System.out.println(b.getOwner());} );
-    //TODO implement many-to-many retrieval
     beacons = ((User) all[0]).getSeen_beacons();
     beacons.forEach(b -> { System.out.println(b); System.out.println(b.getOwner());} );
   }

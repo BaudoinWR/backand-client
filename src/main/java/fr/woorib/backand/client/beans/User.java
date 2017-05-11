@@ -1,9 +1,9 @@
 package fr.woorib.backand.client.beans;
 
-import fr.woorib.backand.client.api.BackandObject;
-
 import java.util.Collection;
 import java.util.Collections;
+import fr.woorib.backand.client.api.BackandManyToMany;
+import fr.woorib.backand.client.api.BackandObject;
 
 /**
  * User bean used for personal testing with backand.com account
@@ -36,6 +36,7 @@ public class User {
     this.beacons = beacons;
   }
 
+  @BackandManyToMany(parameter = "beacon")
   public Collection<Beacon> getSeen_beacons() {
     return seen_beacons;
   }

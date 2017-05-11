@@ -1,12 +1,9 @@
-/**
- * Paquet de définition
- **/
 package fr.woorib.backand.client.tools;
 
 import java.lang.reflect.Method;
 
 /**
- * Description: Merci de donner une description du service rendu par cette classe
+ * Helper class to provide utility for Reflection
  */
 public class ReflectionHelper {
   /**

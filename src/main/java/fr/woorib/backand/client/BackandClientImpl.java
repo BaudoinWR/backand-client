@@ -90,17 +90,22 @@ public class BackandClientImpl implements BackandClient {
 
   @Override
   public <T> T[] retrieveObjects(String table, Class<T> classOfT) throws BackandClientException {
-    String callBackand = callBackand("/1/objects/"+table);
+    String callBackand = callBackand("/1/objects/" + table);
     BackandResponseWrapper<T> backandResponseWrapper = extractResponseObject(callBackand, BackandResponseWrapper.class);
-    backandResponseWrapper.wrapData(classOfT, table);
+    backandResponseWrapper.wrapData(classOfT, table, null);
     return backandResponseWrapper.getData();
   }
 
   @Override
   public <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT) throws BackandClientException {
+    return retrieveObjectDependence(table, id, param, classOfT, null);
+  }
+
+  @Override
+  public <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT, String manyToManySide) throws BackandClientException {
     String callBackand = callBackand("/1/objects/" + table +"/"+id+"/"+param);
     BackandResponseWrapper<T> backandResponseWrapper = extractResponseObject(callBackand, BackandResponseWrapper.class);
-    backandResponseWrapper.wrapData(classOfT, table);
+    backandResponseWrapper.wrapData(classOfT, table, manyToManySide);
     return backandResponseWrapper.getData();
   }
 

@@ -67,7 +67,7 @@ public interface BackandClient {
   <T> T[] retrieveObjects(String table, Class<T> classOfT) throws BackandClientException;
 
   /**
-   * Use the backand.com /object/table/id/param to retrieve objects through many to one or many to many relationships
+   * Use the backand.com /object/table/id/param to retrieve objects through many to one relationships
    * @param table the table of the base object
    * @param id the id of the base object
    * @param param the name of the relationship in the base table
@@ -78,5 +78,17 @@ public interface BackandClient {
    */
   <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT) throws BackandClientException;
 
+  /**
+   * Use the backand.com /object/table/id/param to retrieve objects through many to many relationships
+   * @param table the table of the base object
+   * @param id the id of the base object
+   * @param param the name of the relationship in the base table
+   * @param classOfT the class of the expected objects in the relationship
+   * @param manyToManySide the backand.com column in the manyToMany relationship
+   * @param <T>
+   * @return an array of objects of class T
+   * @throws BackandClientException
+   */
+  <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT, String manyToManySide) throws BackandClientException;
 }
  
