@@ -6,24 +6,33 @@ package fr.woorib.backand.client;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Scanner;
-import fr.woorib.backand.client.api.BackandClient;
 import fr.woorib.backand.client.beans.Beacon;
 import fr.woorib.backand.client.beans.User;
 import fr.woorib.backand.client.exception.BackandException;
+import fr.woorib.backand.client.tools.ProxyHelper;
 
 /**
  * Main class used for testing of backand.com calls
  */
 public class Main {
 
-  public static void main(String[] args) throws BackandException {
+  public static void main(String[] args) throws BackandException, InstantiationException, IllegalAccessException {
     MainArgs getMainArgs = new MainArgs(args).invoke();
     String username = getMainArgs.getUsername();
     String password = getMainArgs.getPassword();
     String appName = getMainArgs.getAppName();
-    BackandClient backandClient = BackandClientImpl.get();
+    BackandClientImpl backandClient = (BackandClientImpl) BackandClientImpl.get();
     backandClient.establishConnection(username, password, appName);
+    Beacon beacon = new Beacon();
     User users = backandClient.retrieveObjectById("users", 1, User.class);
+    User user = ProxyHelper.unProxify(users);
+    System.out.println(user);
+    beacon.setDescription("test");
+    beacon.setLatitude(33.0);
+    beacon.setLongitude(36.0);
+    beacon.setOwner(user);
+    Beacon s = backandClient.insertNewObject(beacon);
+    System.out.println(s.getOwner());
     System.out.println(users);
     Collection<Beacon> seen_beacons = users.getSeen_beacons();
     System.out.println(seen_beacons);

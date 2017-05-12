@@ -1,5 +1,6 @@
 package fr.woorib.backand.client.tools;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
@@ -32,6 +33,34 @@ public class ReflectionHelper {
       return (T) new Integer((String) value);
     }
     return type.cast(value);
+  }
+
+  /**
+   * returns the setter method for a specific field in the class given.
+   * @param field
+   * @param clazz
+   * @return
+   * @throws NoSuchMethodException
+   */
+  public static Method getSetterMethod(Field field, Class<?> clazz) throws NoSuchMethodException {
+    Class<?> type = field.getType();
+    String methodName = "set" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+    Method method = clazz.getMethod(methodName, type);
+    return method;
+  }
+
+  /**
+   * returns the getter method for a specific field in the class given.
+   * @param field
+   * @param clazz
+   * @return
+   * @throws NoSuchMethodException
+   */
+  public static Method getGetterMethod(Field field, Class<?> clazz) throws NoSuchMethodException {
+    Class<?> type = field.getType();
+    String methodName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+    Method method = clazz.getMethod(methodName);
+    return method;
   }
 }
  

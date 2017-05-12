@@ -23,8 +23,10 @@ public interface BackandClient {
           Date.class};
   /** Backand's public API url. **/
   String BACKAND_API_URL = "https://api.backand.com";
-  /** Backand's oAuth endpoint to get user token **/
+  /** Backand's oAuth endpoint to get user token. **/
   String TOKEN_ENDPOINT = "/token";
+  /** Backand's public API endpoint. **/
+  String BACKAND_API_ENDPOINT = "/1/objects/";
 
   /** Establish a connection to the backand.com api in order to retrive an access_token.
    *
@@ -90,5 +92,13 @@ public interface BackandClient {
    * @throws BackandClientException
    */
   <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT, String manyToManySide) throws BackandClientException;
+
+  /**
+   * Save a new object onto backand.com
+   * @param object must have a BackandObject annotation.
+   * @param <T> the object's class.
+   * @return a proxy of the backand object created.
+   */
+  <T> T insertNewObject(T object) throws BackandException;
 }
  

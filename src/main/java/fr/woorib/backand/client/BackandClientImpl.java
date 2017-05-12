@@ -1,6 +1,7 @@
 package fr.woorib.backand.client;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.MalformedURLException;
@@ -15,6 +16,7 @@ import fr.woorib.backand.client.api.BackandObject;
 import fr.woorib.backand.client.exception.BackandClientException;
 import fr.woorib.backand.client.exception.BackandException;
 import fr.woorib.backand.client.tools.HttpHelper;
+import fr.woorib.backand.client.tools.ProxyHelper;
 
 /**
  * Using java.net api to connect to backand.com
@@ -72,9 +74,9 @@ public class BackandClientImpl implements BackandClient {
 
   @Override
   public <T> T retrieveObjectById(String table, Integer id, Class<T> classOfT) throws BackandException {
-    String callBackand = callBackand("/1/objects/" + table +"/"+id);
+    String callBackand = callBackand(BACKAND_API_ENDPOINT + table +"/"+id);
     LinkedTreeMap t = extractResponseObject(callBackand, LinkedTreeMap.class);
-    T t1 = BackandResponseWrapper.generateWrappedObject(classOfT, t, table);
+    T t1 = ProxyHelper.generateWrappedObject(classOfT, t, table);
     return t1;
   }
 
@@ -90,7 +92,7 @@ public class BackandClientImpl implements BackandClient {
 
   @Override
   public <T> T[] retrieveObjects(String table, Class<T> classOfT) throws BackandClientException {
-    String callBackand = callBackand("/1/objects/" + table);
+    String callBackand = callBackand(BACKAND_API_ENDPOINT + table);
     BackandResponseWrapper<T> backandResponseWrapper = extractResponseObject(callBackand, BackandResponseWrapper.class);
     backandResponseWrapper.wrapData(classOfT, table, null);
     return backandResponseWrapper.getData();
@@ -103,10 +105,24 @@ public class BackandClientImpl implements BackandClient {
 
   @Override
   public <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT, String manyToManySide) throws BackandClientException {
-    String callBackand = callBackand("/1/objects/" + table +"/"+id+"/"+param);
+    String callBackand = callBackand(BACKAND_API_ENDPOINT + table +"/"+id+"/"+param);
     BackandResponseWrapper<T> backandResponseWrapper = extractResponseObject(callBackand, BackandResponseWrapper.class);
     backandResponseWrapper.wrapData(classOfT, table, manyToManySide);
     return backandResponseWrapper.getData();
+  }
+
+  @Override
+  public <T> T insertNewObject(T object) throws BackandException {
+    BackandObject annotation = object.getClass().getAnnotation(BackandObject.class);
+    if (annotation == null) {
+      throw new BackandException("Class "+object.getClass()+" is missing @BackandObject annotation");
+    }
+    String table = annotation.table();
+    String json = new Gson().toJson(object);
+    String postBackand = postBackand(BACKAND_API_ENDPOINT + table + "?returnObject=true", json);
+    LinkedTreeMap t = extractResponseObject(postBackand, LinkedTreeMap.class);
+    T t1 = ProxyHelper.generateWrappedObject((Class<T>) object.getClass(), t, table);
+    return t1;
   }
 
   private <T> T extractResponseObject(String response, Class<T> classOfT) {
@@ -124,9 +140,35 @@ public class BackandClientImpl implements BackandClient {
     String response;
     System.out.println(endpoint);
     try {
-      conn = HttpHelper.getHttpURLConnection(proxy, token, BACKAND_API_URL + endpoint);
+      conn = HttpHelper.getHttpURLConnection(proxy, token, BACKAND_API_URL + endpoint, HttpHelper.GET);
 
       HttpHelper.addBodyParameters(conn, parameters);
+
+      response = HttpHelper.getResponseAsString(conn);
+    } catch (MalformedURLException e) {
+      throw new BackandClientException("Error in the backand client URL setup", e);
+    } catch (ProtocolException e) {
+      throw new BackandClientException("Error in the backand client protocol", e);
+    } catch (IOException e) {
+      throw new BackandClientException("IOException when trying to connect to Backand", e);
+    } finally {
+      if (conn != null) {
+        conn.disconnect();
+      }
+    }
+    return response;
+  }
+
+  private String postBackand(String endpoint, String json) throws BackandClientException {
+
+    HttpURLConnection conn = null;
+    String response;
+    try {
+      conn = HttpHelper.getHttpURLConnection(proxy, token, BACKAND_API_URL + endpoint, HttpHelper.POST);
+
+      try (OutputStream output = conn.getOutputStream()) {
+        output.write(json.getBytes());
+      }
 
       response = HttpHelper.getResponseAsString(conn);
     } catch (MalformedURLException e) {

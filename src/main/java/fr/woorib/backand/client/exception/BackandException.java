@@ -7,5 +7,9 @@ public class BackandException extends Exception {
   public BackandException(String s, Exception e) {
     super(s,e);
   }
+
+  public BackandException(String s) {
+    super(s);
+  }
 }
  

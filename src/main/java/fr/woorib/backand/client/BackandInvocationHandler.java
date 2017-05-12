@@ -9,11 +9,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import com.google.gson.internal.LinkedTreeMap;
-import fr.woorib.backand.client.api.BackandClient;
 import fr.woorib.backand.client.api.BackandManyToMany;
 import fr.woorib.backand.client.api.BackandObject;
 import fr.woorib.backand.client.exception.BackandClientException;
 import fr.woorib.backand.client.exception.BackandException;
+import fr.woorib.backand.client.tools.ProxyHelper;
 import fr.woorib.backand.client.tools.ReflectionHelper;
 import net.sf.cglib.proxy.InvocationHandler;
 
@@ -33,7 +33,7 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
   /** stores backandIds of objects linked to the proxied object for lazy retrieval */
   private Map<String, Integer> backandObjectsIds;
 
-  BackandInvocationHandler(LinkedTreeMap<String, Object> object, T real, String backandTableName) {
+  public BackandInvocationHandler(LinkedTreeMap<String, Object> object, T real, String backandTableName) {
     this.backandObjectsIds = new HashMap<>();
     this.backandId = ReflectionHelper.castValue(object.get("id"), int.class);
     this.real = real;
@@ -60,10 +60,9 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
   private void assignParameter(String parameter, Object parameterValue) {
     try {
       Field declaredField = this.real.getClass().getDeclaredField(parameter);
+      Method method = ReflectionHelper.getSetterMethod(declaredField, real.getClass());
       Class<?> type = declaredField.getType();
-      String methodName = "set" + parameter.substring(0, 1).toUpperCase() + parameter.substring(1);
-      Method method = this.real.getClass().getMethod(methodName, type);
-      if (isBackandClass(type)) {
+      if (ProxyHelper.isBackandClass(type)) {
         Object castedValue = ReflectionHelper.castValue(parameterValue, type);
         method.invoke(this.real, castedValue);
       } else if(!Arrays.stream(type.getInterfaces()).anyMatch(Iterable.class::equals)) {
@@ -85,10 +84,6 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
     }
   }
 
-  private boolean isBackandClass(Class<?> type) {
-    return Arrays.stream(BackandClient.BACKAND_CLASSES).anyMatch(type::equals);
-  }
-
   /**
    * Will generally use the real object to invoke methods.
    * When trying to use a getter on a non Backand class, will use the backandId to retrieve the data directly from backand.com
@@ -106,7 +101,7 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
     if (method.getName().startsWith("get")) {
       if (method.getReturnType() == Collection.class) {
         return getProxiedCollection(method);
-      } else if (!isBackandClass(method.getReturnType())) {
+      } else if (!ProxyHelper.isBackandClass(method.getReturnType())) {
         return getProxiedObject(method);
       }
     }

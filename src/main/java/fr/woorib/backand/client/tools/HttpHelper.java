@@ -17,6 +17,9 @@ import fr.woorib.backand.client.AccessToken;
  */
 public class HttpHelper {
 
+  public static final String GET = "GET";
+  public static final String POST = "POST";
+  public static final String DELETE = "DELETE";
   private static final String CHARSET = "UTF-8";
 
   public static String getResponseAsString(HttpURLConnection conn) throws IOException {
@@ -38,10 +41,10 @@ public class HttpHelper {
     return response;
   }
 
-  public static HttpURLConnection getHttpURLConnection(Proxy proxy, AccessToken token, String endpoint) throws IOException {
+  public static HttpURLConnection getHttpURLConnection(Proxy proxy, AccessToken token, String endpoint, String method) throws IOException {
     URL apiUrl = new URL(endpoint);
     HttpURLConnection conn = (HttpURLConnection) apiUrl.openConnection(proxy);
-    conn.setRequestMethod("GET");
+    conn.setRequestMethod(method);
     conn.setRequestProperty("Accept", "application/json");
     if (token != null) {
       conn.setRequestProperty("Authorization", "Bearer "+token.getAccess_token());
