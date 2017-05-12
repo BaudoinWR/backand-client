@@ -56,7 +56,7 @@ public class Beacon {
     this.id = id;
   }
 
-  @BackandManyToMany(parameter="target")
+  @BackandManyToMany(parameter="target", reference="beacon")
   public Collection<User> getTargets() {
     return targets;
   }

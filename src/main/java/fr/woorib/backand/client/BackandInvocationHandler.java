@@ -33,6 +33,13 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
   /** stores backandIds of objects linked to the proxied object for lazy retrieval */
   private Map<String, Integer> backandObjectsIds;
 
+  /**
+   * Constructor will initiate the real object with the contents of the object parameter which is backand.com data.
+   * It also initiates backandTableName and backandId.
+   * @param object
+   * @param real
+   * @param backandTableName
+   */
   public BackandInvocationHandler(LinkedTreeMap<String, Object> object, T real, String backandTableName) {
     this.backandObjectsIds = new HashMap<>();
     this.backandId = ReflectionHelper.castValue(object.get("id"), int.class);

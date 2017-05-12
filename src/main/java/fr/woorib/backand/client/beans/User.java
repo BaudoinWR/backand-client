@@ -36,7 +36,7 @@ public class User {
     this.beacons = beacons;
   }
 
-  @BackandManyToMany(parameter = "beacon")
+  @BackandManyToMany(parameter = "beacon", reference = "target")
   public Collection<Beacon> getSeen_beacons() {
     return seen_beacons;
   }

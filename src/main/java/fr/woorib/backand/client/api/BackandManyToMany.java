@@ -17,4 +17,11 @@ public @interface BackandManyToMany {
    * @return
    */
     String parameter();
+
+  /**
+   * Name of the column in backan.com that references the current object in the
+   * many-to-many relationship.
+   * @return
+   */
+    String reference();
 }

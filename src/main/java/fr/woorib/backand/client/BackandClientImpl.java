@@ -125,16 +125,36 @@ public class BackandClientImpl implements BackandClient {
     return t1;
   }
 
+  /**
+   * Transforms the http response from backand.com into an object of class classOfT.
+   * @param response
+   * @param classOfT
+   * @param <T>
+   * @return
+   */
   private <T> T extractResponseObject(String response, Class<T> classOfT) {
     System.out.println("Extracting " +response);
     Gson g = new Gson();
     return g.fromJson(response, classOfT);
   }
 
+  /**
+   * Sends a GET request to backand.com at the specified endpoint.
+   * @param endpoint
+   * @return
+   * @throws BackandClientException
+   */
   private String callBackand(String endpoint) throws BackandClientException {
     return callBackand(endpoint, null);
   }
 
+  /**
+   * Sends a GET request to backand.com at the specified endpoint with the parameters encoded in the request body.
+   * @param endpoint
+   * @param parameters
+   * @return
+   * @throws BackandClientException
+   */
   private String callBackand(String endpoint, Map<String, String> parameters) throws BackandClientException {
     HttpURLConnection conn = null;
     String response;
@@ -159,6 +179,13 @@ public class BackandClientImpl implements BackandClient {
     return response;
   }
 
+  /**
+   * Sends a POST request to backand.com at the specified endpoint using the json as body content.
+   * @param endpoint
+   * @param json
+   * @return
+   * @throws BackandClientException
+   */
   private String postBackand(String endpoint, String json) throws BackandClientException {
 
     HttpURLConnection conn = null;
