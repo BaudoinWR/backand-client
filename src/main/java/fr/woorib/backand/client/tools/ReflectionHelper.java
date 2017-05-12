@@ -26,13 +26,18 @@ public class ReflectionHelper {
    */
   public static <T> T castValue(Object value, Class<T> type) {
     boolean wantInt = type == Integer.class || type == int.class;
-    if ((value instanceof  Number) && wantInt) {
-      return (T) new Integer(((Number) value).intValue());
+    try {
+      if ((value instanceof Number) && wantInt) {
+        return (T) new Integer(((Number) value).intValue());
+      }
+      if (value instanceof String && wantInt) {
+        return (T) new Integer((String) value);
+      }
+      return type.cast(value);
+    } catch (Exception e) {
+      System.err.println("Error during casting: "+e.getClass()+ " " +e.getMessage());
+      return null;
     }
-    if (value instanceof String && wantInt) {
-      return (T) new Integer((String) value);
-    }
-    return type.cast(value);
   }
 
   /**

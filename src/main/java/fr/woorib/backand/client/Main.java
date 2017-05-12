@@ -3,8 +3,10 @@
  **/
 package fr.woorib.backand.client;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import java.util.Scanner;
 import fr.woorib.backand.client.beans.Beacon;
 import fr.woorib.backand.client.beans.User;
@@ -25,14 +27,19 @@ public class Main {
     backandClient.establishConnection(username, password, appName);
     Beacon beacon = new Beacon();
     User users = backandClient.retrieveObjectById("users", 1, User.class);
+    User user2 = backandClient.retrieveObjectById("users", 3, User.class);
     User user = ProxyHelper.unProxify(users);
     System.out.println(user);
     beacon.setDescription("test");
     beacon.setLatitude(33.0);
     beacon.setLongitude(36.0);
     beacon.setOwner(user);
-    Beacon s = backandClient.insertNewObject(beacon);
-    System.out.println(s.getOwner());
+    List<User> list = new ArrayList<>();
+    list.add(user);
+    list.add(user2);
+    beacon.setTargets(list);
+  //  Beacon s = backandClient.insertNewObject(beacon);
+  //  System.out.println(s.getOwner());
     System.out.println(users);
     Collection<Beacon> seen_beacons = users.getSeen_beacons();
     System.out.println(seen_beacons);
@@ -41,7 +48,7 @@ public class Main {
     Collection<Beacon> beacons = ((User) all[0]).getBeacons();
     beacons.forEach(b -> { System.out.println(b); System.out.println(b.getOwner());} );
     beacons = ((User) all[0]).getSeen_beacons();
-    beacons.forEach(b -> { System.out.println(b); System.out.println(b.getOwner());} );
+    beacons.forEach(b -> { System.out.println(b); System.out.println(b.getTargets());} );
   }
 
   private static class MainArgs {

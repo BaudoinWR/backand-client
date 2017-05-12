@@ -1,5 +1,7 @@
 package fr.woorib.backand.client.beans;
 
+import java.util.Collection;
+import fr.woorib.backand.client.api.BackandManyToMany;
 import fr.woorib.backand.client.api.BackandObject;
 
 /**
@@ -11,6 +13,7 @@ public class Beacon {
   private Double longitude;
   private String description;
   private User owner;
+  private Collection<User> targets;
   private int id;
 
   public Double getLatitude() {
@@ -53,15 +56,25 @@ public class Beacon {
     this.id = id;
   }
 
+  @BackandManyToMany(parameter="target")
+  public Collection<User> getTargets() {
+    return targets;
+  }
+
+  public void setTargets(Collection<User> targets) {
+    this.targets = targets;
+  }
+
   @Override
   public String toString() {
     return "Beacon{" +
-            "latitude=" + latitude +
-            ", longitude=" + longitude +
-            ", description='" + description + '\'' +
-            ", owner=" + owner +
-            ", id=" + id +
-            '}';
+      "latitude=" + latitude +
+      ", longitude=" + longitude +
+      ", description='" + description + '\'' +
+      ", owner=" + owner +
+      ", targets=" + targets +
+      ", id=" + id +
+      '}';
   }
 }
 
