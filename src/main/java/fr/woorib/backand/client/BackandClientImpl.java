@@ -91,7 +91,7 @@ public class BackandClientImpl implements BackandClient {
   }
 
   @Override
-  public <T> T[] retrieveObjects(String table, Class<T> classOfT) throws BackandClientException {
+  public <T> T[] retrieveObjects(String table, Class<T> classOfT) throws BackandException {
     String callBackand = callBackand(BACKAND_API_ENDPOINT + table);
     BackandResponseWrapper<T> backandResponseWrapper = extractResponseObject(callBackand, BackandResponseWrapper.class);
     backandResponseWrapper.wrapData(classOfT, table, null);
@@ -99,12 +99,12 @@ public class BackandClientImpl implements BackandClient {
   }
 
   @Override
-  public <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT) throws BackandClientException {
+  public <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT) throws BackandException {
     return retrieveObjectDependence(table, id, param, classOfT, null);
   }
 
   @Override
-  public <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT, String manyToManySide) throws BackandClientException {
+  public <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT, String manyToManySide) throws BackandException {
     String callBackand = callBackand(BACKAND_API_ENDPOINT + table +"/"+id+"/"+param);
     BackandResponseWrapper<T> backandResponseWrapper = extractResponseObject(callBackand, BackandResponseWrapper.class);
     backandResponseWrapper.wrapData(classOfT, table, manyToManySide);
@@ -144,7 +144,7 @@ public class BackandClientImpl implements BackandClient {
    * @return
    * @throws BackandClientException
    */
-  private String callBackand(String endpoint) throws BackandClientException {
+  private String callBackand(String endpoint) throws BackandException {
     return callBackand(endpoint, null);
   }
 
@@ -155,7 +155,7 @@ public class BackandClientImpl implements BackandClient {
    * @return
    * @throws BackandClientException
    */
-  private String callBackand(String endpoint, Map<String, String> parameters) throws BackandClientException {
+  private String callBackand(String endpoint, Map<String, String> parameters) throws BackandException {
     HttpURLConnection conn = null;
     String response;
     System.out.println(endpoint);
@@ -186,7 +186,7 @@ public class BackandClientImpl implements BackandClient {
    * @return
    * @throws BackandClientException
    */
-  private String postBackand(String endpoint, String json) throws BackandClientException {
+  private String postBackand(String endpoint, String json) throws BackandException {
 
     HttpURLConnection conn = null;
     String response;

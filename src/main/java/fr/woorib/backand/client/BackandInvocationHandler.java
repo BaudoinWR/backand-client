@@ -11,7 +11,6 @@ import java.util.Map;
 import com.google.gson.internal.LinkedTreeMap;
 import fr.woorib.backand.client.api.BackandManyToMany;
 import fr.woorib.backand.client.api.BackandObject;
-import fr.woorib.backand.client.exception.BackandClientException;
 import fr.woorib.backand.client.exception.BackandException;
 import fr.woorib.backand.client.tools.ProxyHelper;
 import fr.woorib.backand.client.tools.ReflectionHelper;
@@ -153,7 +152,7 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
       }
       return Arrays.asList(data);
     }
-    catch (BackandClientException e) {
+    catch (BackandException e) {
       e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
       throw new InvocationTargetException(e, "Backand Access failed for " + param);
     }

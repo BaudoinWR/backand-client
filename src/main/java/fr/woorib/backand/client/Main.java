@@ -38,8 +38,8 @@ public class Main {
     list.add(user);
     list.add(user2);
     beacon.setTargets(list);
-  //  Beacon s = backandClient.insertNewObject(beacon);
-  //  System.out.println(s.getOwner());
+    Beacon s = backandClient.insertNewObject(beacon);
+    System.out.println(s.getOwner());
     System.out.println(users);
     Collection<Beacon> seen_beacons = users.getSeen_beacons();
     System.out.println(seen_beacons);

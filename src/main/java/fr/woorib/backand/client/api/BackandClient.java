@@ -66,7 +66,7 @@ public interface BackandClient {
    * @return an array of objects of class T
    * @throws BackandClientException
    */
-  <T> T[] retrieveObjects(String table, Class<T> classOfT) throws BackandClientException;
+  <T> T[] retrieveObjects(String table, Class<T> classOfT) throws BackandException;
 
   /**
    * Use the backand.com /object/table/id/param to retrieve objects through many to one relationships
@@ -78,7 +78,7 @@ public interface BackandClient {
    * @return an array of objects of class T
    * @throws BackandClientException
    */
-  <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT) throws BackandClientException;
+  <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT) throws BackandException;
 
   /**
    * Use the backand.com /object/table/id/param to retrieve objects through many to many relationships
@@ -91,7 +91,7 @@ public interface BackandClient {
    * @return an array of objects of class T
    * @throws BackandClientException
    */
-  <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT, String manyToManySide) throws BackandClientException;
+  <T> T[] retrieveObjectDependence(String table, Integer id, String param, Class<T> classOfT, String manyToManySide) throws BackandException;
 
   /**
    * Save a new object onto backand.com
