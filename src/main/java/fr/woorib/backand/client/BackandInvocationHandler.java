@@ -8,6 +8,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gson.internal.LinkedTreeMap;
 import fr.woorib.backand.client.api.BackandManyToMany;
 import fr.woorib.backand.client.api.BackandObject;
@@ -22,6 +25,7 @@ import net.sf.cglib.proxy.InvocationHandler;
  * to return only ids on Collection types.
  */
 public class BackandInvocationHandler<T> implements InvocationHandler {
+  private static Logger LOG = Logger.getLogger(BackandInvocationHandler.class.getName());
 
   /** Instance of the real object managed by this handler. */
   private T real;
@@ -71,23 +75,32 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
       if (ProxyHelper.isBackandClass(type)) {
         Object castedValue = ReflectionHelper.castValue(parameterValue, type);
         method.invoke(this.real, castedValue);
-      } else if(!Arrays.stream(type.getInterfaces()).anyMatch(Iterable.class::equals)) {
+      } else if(!isIterable(type)) {
         //If the type is not a collection, backand.com will have returned the ID of the object.
         backandObjectsIds.put(parameter, ReflectionHelper.castValue(parameterValue, Integer.class));
       }
     }
     catch (NoSuchFieldException e) {
-      System.err.println("Field "+ e.getMessage() + " sent by backand not present in class " + real.getClass() );
+      LOG.fine("Field "+ e.getMessage() + " sent by backand not present in class " + real.getClass() );
     }
     catch (InvocationTargetException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage(), e);
     }
     catch (NoSuchMethodException e) {
-      System.err.println("Method "+ e.getMessage() + " not present in class " + real.getClass() );
+      LOG.fine("Method "+ e.getMessage() + " not present in class " + real.getClass() );
     }
     catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage(), e);
     }
+  }
+
+  private boolean isIterable(Class<?> type) {
+    for (Class clazz : type.getInterfaces()) {
+      if (clazz.equals(Iterable.class)) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -126,7 +139,7 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
     try {
       return BackandClientImpl.get().retrieveBackandObjectFromId(id, method.getReturnType());
     } catch (BackandException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage(), e);
       throw new InvocationTargetException(e, "Backand Access failed for " + param);
     }
   }
@@ -153,7 +166,6 @@ public class BackandInvocationHandler<T> implements InvocationHandler {
       return Arrays.asList(data);
     }
     catch (BackandException e) {
-      e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
       throw new InvocationTargetException(e, "Backand Access failed for " + param);
     }
   }

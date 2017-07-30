@@ -3,7 +3,9 @@ package fr.woorib.backand.client.tools;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import com.google.gson.internal.LinkedTreeMap;
 import fr.woorib.backand.client.BackandInvocationHandler;
 import fr.woorib.backand.client.api.BackandClient;
@@ -13,6 +15,8 @@ import net.sf.cglib.proxy.Enhancer;
  * Description: Merci de donner une description du service rendu par cette classe
  */
 public class ProxyHelper {
+  private static Logger LOG = Logger.getLogger(ProxyHelper.class.getName());
+
   /**
    * Provides a way to build a proxy object of class T using GLib Enhancer and fill it with the LinkedTreeMap retrieved from backand.com
    * @param classOfT class of the object expected
@@ -28,10 +32,10 @@ public class ProxyHelper {
       setFieldValues(o, backandMap);
     }
     catch (InstantiationException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage(), e);
     }
     catch (IllegalAccessException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage(), e);
     }
     return o;
   }
@@ -58,7 +62,7 @@ public class ProxyHelper {
         field.setAccessible(accessible);
       }
       catch (IllegalAccessException e) {
-        System.err.println("Can't set field "+e);
+        LOG.severe("Can't set field "+e);
       }
     }
   }
@@ -83,18 +87,23 @@ public class ProxyHelper {
         setterMethod.invoke(unproxied, gotten);
       }
       catch (NoSuchMethodException e) {
-        System.err.println("No method to deal with the field " + field + " in class " + classOfT);
+        LOG.severe("No method to deal with the field " + field + " in class " + classOfT);
       }
       catch (InvocationTargetException e) {
-        System.err.println("Error while trying to deal with the field " + field + " in class " + classOfT);
-        e.printStackTrace();
+        LOG.severe("Error while trying to deal with the field " + field + " in class " + classOfT);
+        LOG.log(Level.SEVERE, e.getMessage(), e);
       }
     }
     return unproxied;
   }
 
   public static boolean isBackandClass(Class<?> type) {
-    return Arrays.stream(BackandClient.BACKAND_CLASSES).anyMatch(type::equals);
+    for (Class clazz : BackandClient.BACKAND_CLASSES) {
+      if (clazz.equals(type)) {
+        return true;
+      }
+    }
+    return false;
   }
 }
  

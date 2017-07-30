@@ -9,6 +9,8 @@ import java.net.ProtocolException;
 import java.net.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.internal.LinkedTreeMap;
 import fr.woorib.backand.client.api.BackandClient;
@@ -23,10 +25,11 @@ import fr.woorib.backand.client.tools.ProxyHelper;
  * Using google's Gson api to read json objects returned by backand.com
  */
 public class BackandClientImpl implements BackandClient {
+  private static Logger LOG = Logger.getLogger(BackandClient.class.getName());
+
   private AccessToken token = null;
   private final Proxy proxy;
   private static BackandClient instance;
-
   private BackandClientImpl() {
     proxy = Proxy.NO_PROXY;
   }
@@ -68,7 +71,7 @@ public class BackandClientImpl implements BackandClient {
 
     String response = callBackand(tokenEndpoint, parameters);
     token = extractResponseObject(response, AccessToken.class);
-    System.out.println(token);
+    LOG.finest(token.toString());
     return true;
   }
 
@@ -133,7 +136,7 @@ public class BackandClientImpl implements BackandClient {
    * @return
    */
   private <T> T extractResponseObject(String response, Class<T> classOfT) {
-    System.out.println("Extracting " +response);
+    LOG.fine("Extracting " +response);
     Gson g = new Gson();
     return g.fromJson(response, classOfT);
   }
@@ -158,7 +161,7 @@ public class BackandClientImpl implements BackandClient {
   private String callBackand(String endpoint, Map<String, String> parameters) throws BackandException {
     HttpURLConnection conn = null;
     String response;
-    System.out.println(endpoint);
+    LOG.fine(endpoint);
     try {
       conn = HttpHelper.getHttpURLConnection(proxy, token, BACKAND_API_URL + endpoint, HttpHelper.GET);
 

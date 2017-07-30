@@ -1,12 +1,17 @@
 package fr.woorib.backand.client.tools;
 
+import fr.woorib.backand.client.BackandInvocationHandler;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.util.logging.Logger;
 
 /**
  * Helper class to provide utility for Reflection
  */
 public class ReflectionHelper {
+  private static Logger LOG = Logger.getLogger(ReflectionHelper.class.getName());
+
   /**
    * Resolves the name of the parameter from a getter method
    * @param method a getter method.
@@ -35,7 +40,7 @@ public class ReflectionHelper {
       }
       return type.cast(value);
     } catch (Exception e) {
-      System.err.println("Error during casting: "+e.getClass()+ " " +e.getMessage());
+      LOG.severe("Error during casting: "+e.getClass()+ " " +e.getMessage());
       return null;
     }
   }

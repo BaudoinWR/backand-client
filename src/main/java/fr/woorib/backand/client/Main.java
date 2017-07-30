@@ -41,11 +41,13 @@ public class Main {
     Collection<Beacon> seen_beacons = users.getSeen_beacons();
     System.out.println("SEEN BEACONS: "+seen_beacons);
     Object[] all = backandClient.retrieveObjects("users", User.class);
+/*
     Arrays.stream(all).forEach(System.out::println);
     Collection<Beacon> beacons = ((User) all[0]).getBeacons();
     beacons.forEach(b -> { System.out.println(b); System.out.println(b.getOwner());} );
     beacons = ((User) all[0]).getSeen_beacons();
     beacons.forEach(b -> { System.out.println(b); System.out.println(b.getTargets());} );
+*/
   }
 
   private static class MainArgs {

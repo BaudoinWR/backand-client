@@ -10,6 +10,9 @@ import java.net.Proxy;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import fr.woorib.backand.client.AccessToken;
 import fr.woorib.backand.client.exception.BackandException;
 
@@ -17,6 +20,7 @@ import fr.woorib.backand.client.exception.BackandException;
  * Helper for http connection to the backand.com framework
  */
 public class HttpHelper {
+  private static Logger LOG = Logger.getLogger(HttpHelper.class.getName());
 
   public static final String GET = "GET";
   public static final String POST = "POST";
@@ -103,12 +107,12 @@ public class HttpHelper {
    */
   private static String encodeQueryParameters(Map<String, String> parameters) throws UnsupportedEncodingException {
     StringBuilder builder = new StringBuilder();
-    parameters.forEach((key, value) -> builder.append(key)
-      .append("=")
-
-      .append(encodeParam(value))
-      .append("&") );
-
+    for (String key : parameters.keySet()) {
+      builder.append(key)
+              .append("=")
+              .append(parameters.get(key))
+              .append("&");
+    }
     String query = builder.toString();
     if (query.length() > 0) {
       query = query.substring(0, query.length()-1);
@@ -121,7 +125,7 @@ public class HttpHelper {
       return URLEncoder.encode(value, CHARSET);
     }
     catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+      LOG.log(Level.SEVERE, e.getMessage(), e);
     }
     return "";
   }
