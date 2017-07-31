@@ -75,7 +75,7 @@ public class HttpHelper {
     if (token != null) {
       conn.setRequestProperty("Authorization", "Bearer "+token.getAccess_token());
     }
-    conn.setDoOutput(true);
+    conn.setDoOutput(!GET.equals(method));
 
     conn.setRequestProperty("Accept-Charset", CHARSET);
     conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=" + CHARSET);
@@ -93,6 +93,7 @@ public class HttpHelper {
       return;
     }
     String query = encodeQueryParameters(parameters);
+    conn.setDoOutput(true);
 
     try (OutputStream output = conn.getOutputStream()) {
       output.write(query.getBytes(CHARSET));

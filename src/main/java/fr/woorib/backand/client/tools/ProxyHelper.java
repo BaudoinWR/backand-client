@@ -1,15 +1,21 @@
 package fr.woorib.backand.client.tools;
 
+import com.google.gson.internal.LinkedTreeMap;
+import fr.woorib.backand.client.BackandInvocationHandler;
+import fr.woorib.backand.client.api.BackandClient;
+import net.bytebuddy.ByteBuddy;
+import net.bytebuddy.ClassFileVersion;
+import net.bytebuddy.android.AndroidClassLoadingStrategy;
+import net.bytebuddy.description.method.MethodDescription;
+import net.bytebuddy.implementation.InvocationHandlerAdapter;
+import net.bytebuddy.matcher.ElementMatchers;
+
+import java.io.File;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import com.google.gson.internal.LinkedTreeMap;
-import fr.woorib.backand.client.BackandInvocationHandler;
-import fr.woorib.backand.client.api.BackandClient;
-import net.sf.cglib.proxy.Enhancer;
 
 /**
  * Description: Merci de donner une description du service rendu par cette classe
@@ -28,7 +34,8 @@ public class ProxyHelper {
   public static <T> T generateWrappedObject(Class<T> classOfT, LinkedTreeMap backandMap, String backandTableName) {
     T o = null;
     try {
-      o = (T) Enhancer.create(classOfT, new BackandInvocationHandler<>(backandMap, classOfT.newInstance(), backandTableName));
+      //o = (T) Enhancer.create(classOfT, new BackandInvocationHandler<>(backandMap, classOfT.newInstance(), backandTableName));
+      o = getProxy(classOfT, backandMap, backandTableName);
       setFieldValues(o, backandMap);
     }
     catch (InstantiationException e) {
@@ -38,6 +45,17 @@ public class ProxyHelper {
       LOG.log(Level.SEVERE, e.getMessage(), e);
     }
     return o;
+  }
+
+  private static <T> T getProxy(Class<T> classOfT, LinkedTreeMap backandMap, String backandTableName) throws IllegalAccessException, InstantiationException {
+    Class<? extends T> dynamicType = new ByteBuddy(ClassFileVersion.JAVA_V6)
+            .subclass(classOfT)
+            .method(ElementMatchers.<MethodDescription>any())
+            .intercept(InvocationHandlerAdapter.of(new BackandInvocationHandler<T>(backandMap, classOfT.newInstance(), backandTableName)))
+            .make()
+            .load(ProxyHelper.class.getClassLoader(), new AndroidClassLoadingStrategy.Wrapping(new File(System.getProperty("buddy.folder"))))
+            .getLoaded();
+    return dynamicType.newInstance();
   }
 
   /**

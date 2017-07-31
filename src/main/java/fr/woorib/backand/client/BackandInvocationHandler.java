@@ -1,23 +1,19 @@
 package fr.woorib.backand.client;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import com.google.gson.internal.LinkedTreeMap;
 import fr.woorib.backand.client.api.BackandManyToMany;
 import fr.woorib.backand.client.api.BackandObject;
 import fr.woorib.backand.client.exception.BackandException;
 import fr.woorib.backand.client.tools.ProxyHelper;
 import fr.woorib.backand.client.tools.ReflectionHelper;
-import net.sf.cglib.proxy.InvocationHandler;
+
+import java.lang.reflect.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Invocation Handler tasked with hijacking method invocations in the proxy to either
