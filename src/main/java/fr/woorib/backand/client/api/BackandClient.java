@@ -100,5 +100,12 @@ public interface BackandClient {
    * @return a proxy of the backand object created.
    */
   <T> T insertNewObject(T object) throws BackandException;
+
+  /**
+   * Returns the userid contained in the AuthToken once connection is established.
+   * @return userid
+   * @throws BackandException if an AuthToken has not been retrieved through establishConnection
+   */
+  Integer getCurrentUser() throws BackandException;
 }
  

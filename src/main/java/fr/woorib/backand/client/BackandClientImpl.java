@@ -128,6 +128,14 @@ public class BackandClientImpl implements BackandClient {
     return t1;
   }
 
+  @Override
+  public Integer getCurrentUser() throws BackandException {
+    if (token == null) {
+      throw new BackandException("Backand Token is null, call establishConnection first");
+    }
+    return token.getUserId();
+  }
+
   /**
    * Transforms the http response from backand.com into an object of class classOfT.
    * @param response
